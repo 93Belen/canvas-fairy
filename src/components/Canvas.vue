@@ -1,29 +1,18 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { LazyBrush } from 'lazy-brush'
 import * as Tone from "tone"
+import { useCoordinatesStore } from '../stores/coordinates'
+const store = useCoordinatesStore()
 
 const synth = new Tone.Synth().toDestination();
 let video, canvas, ctx;
 let hand;
 let detector;
 let started = false;
-let coordinates = ref({
-  x: 0,
-  y: 0
-})
-let options = {
-  flipHorizontal: false, // boolean value for if the video should be flipped, defaults to false
-  maxContinuousChecks: Infinity, // How many frames to go without running the bounding box detector. Defaults to infinity, but try a lower value if the detector is consistently producing bad predictions.
-  detectionConfidence: 0.8, // Threshold for discarding a prediction. Defaults to 0.8.
-  scoreThreshold: 0.9, // A threshold for removing multiple (likely duplicate) detections based on a "non-maximum suppression" algorithm. Defaults to 0.75
-  iouThreshold: 0.3, 
-}
-const lazy = new LazyBrush({
-  radius: 100,
-  enabled: true,
-  initialPoint: { x: 0, y: 0 }
-})
+let prevX = 0
+let prevY = 0
+let points = []
+let index = 0
 
 
 
@@ -34,12 +23,6 @@ onMounted(() => {
     ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-
-    detector = ml5.handpose(video, options, modelReady)
-    detector.on('hand', result => {
-    hand = result[0]
-    })
-
 
     // canvas settings
     // ctx.strokeStyle = 'white'
@@ -52,7 +35,6 @@ onMounted(() => {
 
     function drawCameraIntoCanvas() {
         ctx.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
-        getCoordinates()
         paint()
         window.requestAnimationFrame(drawCameraIntoCanvas);
       }
@@ -63,19 +45,6 @@ onMounted(() => {
 })
 
 // helpers =====================
-let points = []
-
-function getCoordinates(){
-  if(hand){
-      let x = hand.annotations.indexFinger[3][0]
-      let y = hand.annotations.indexFinger[3][1]
-      lazy.update({ x: x, y: y }, { friction: 0 })
-      coordinates.value = lazy.getBrushCoordinates()
-  }
-}
-
-let prevX = 0
-let prevY = 0
 
 const notes = [
   "C4", "E4", "G4", "C5", // Cheerful start
@@ -95,11 +64,11 @@ const noteDurations = [
 
 
 
-let index = 0
+
 
 
 function paint(){
-  if(coordinates.value.x !== prevX || coordinates.value.y !== prevY){
+  if(store.brushX !== prevX || store.brushY !== prevY){
     synth.triggerAttackRelease(notes[index], noteDurations[index]);
     if(index < notes.length){
       index++
@@ -107,10 +76,8 @@ function paint(){
       index = 0
     }
   }
-  ctx.globalAlhpa = 1
-  ctx.save()
-  let dist = distanceBetween({x: prevX, y: prevY}, {x: coordinates.value.x, y: coordinates.value.y});
-  let angle = angleBetween({x: prevX, y: prevY},  {x: coordinates.value.x, y: coordinates.value.y});
+  let dist = distanceBetween({x: prevX, y: prevY}, {x: store.brushX, y: store.brushY});
+  let angle = angleBetween({x: prevX, y: prevY},  {x: store.brushX, y: store.brushY});
   if(started){
      // Calculate number of circles to draw
      let numCircles = Math.min(Math.floor(dist / 20), 5); // 5 circles max, adjust as needed
@@ -143,8 +110,8 @@ function paint(){
     ctx.fill();
     // synth.triggerAttackRelease("C4", "8n");
   }
-  prevX = coordinates.value.x
-  prevY = coordinates.value.y
+  prevX = store.brushX
+  prevY = store.brushY
   ctx.stroke()
 }
 // Helper function to get a random color
@@ -153,10 +120,6 @@ function getRandomColor() {
   return colors[Math.floor(Math.random() * colors.length)]; // Select a random color from the array
 }
 
-
-function modelReady() {
-  console.log("model ready");
-}
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth
@@ -173,17 +136,17 @@ function angleBetween(point1, point2) {
 }
 
 
-function drawPixels(x, y) {
-  for (var i = -10; i < 10; i+= 4) {
-    for (var j = -10; j < 10; j+= 4) {
-      if (Math.random() > 0.5) {
-        ctx.fillStyle = ['red', 'orange', 'yellow', 'green', 
-                         'light-blue', 'blue', 'purple'][Math.round(Math.random() * 6)];
-        ctx.fillRect(x+i, y+j, 4, 4);
-      }
-    }
-  }
-}
+// function drawPixels(x, y) {
+//   for (var i = -10; i < 10; i+= 4) {
+//     for (var j = -10; j < 10; j+= 4) {
+//       if (Math.random() > 0.5) {
+//         ctx.fillStyle = ['red', 'orange', 'yellow', 'green', 
+//                          'light-blue', 'blue', 'purple'][Math.round(Math.random() * 6)];
+//         ctx.fillRect(x+i, y+j, 4, 4);
+//       }
+//     }
+//   }
+// }
 
 
 

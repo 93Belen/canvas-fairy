@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "lazy-brush": "^2.0.1",
+    "pinia": "^2.2.0",
     "tone": "^15.0.4",
     "vue": "^3.4.31"
   },
