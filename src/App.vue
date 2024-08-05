@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { LazyBrush } from 'lazy-brush'
+import * as Tone from "tone"
+
+const synth = new Tone.Synth().toDestination();
 
 let video, canvas, ctx;
 let hand;
@@ -18,7 +21,7 @@ let options = {
   iouThreshold: 0.3, 
 }
 const lazy = new LazyBrush({
-  radius: 10,
+  radius: 100,
   enabled: true,
   initialPoint: { x: 0, y: 0 }
 })
@@ -87,15 +90,58 @@ function getCoordinates(){
 let prevX = 0
 let prevY = 0
 
+// const notes = ["C4", "E4", "G4", "A4", "B4", "C5", "D5", "B4", "G4", "E4", "C4"];
+// const noteDurations = ["8n", "8n", "8n", "8n", "8n", "8n", "8n", "8n", "8n", "8n", "4n"]; // Last note is a quarter note
+// const notes = [
+//   "A3", "C4", "E4", "A4", // Am chord
+//   "G3", "B3", "D4", "G4", // G chord
+//   "F3", "A3", "C4", "F4", // F chord
+//   "E3", "G#3", "B3", "E4" // E7 chord
+// ];
+
+// const noteDurations = [
+//   "4n", "4n", "4n", "4n", // Am chord
+//   "4n", "4n", "4n", "4n", // G chord
+//   "4n", "4n", "4n", "4n", // F chord
+//   "4n", "4n", "4n", "2n"  // E7 chord (last note is a half note)
+// ];
+const notes = [
+  "C4", "E4", "G4", "C5", // Cheerful start
+  "E4", "D4", "C4", // Descending notes
+  "G4", "A4", "G4", // Up and down motion
+  "C5", "B4", "A4", // Climbing up and back
+  "F4", "E4", "D4", "C4" // Resolution back down
+];
+
+const noteDurations = [
+  "4n", "4n", "4n", "4n", // Cheerful start (4 quarter notes)
+  "4n", "4n", "4n", // Descending notes (3 quarter notes)
+  "4n", "4n", "4n", // Up and down motion (3 quarter notes)
+  "4n", "4n", "4n", // Climbing back (3 quarter notes)
+  "4n", "4n", "4n", "2n" // Resolution down (last note is a half note)
+];
+
+
+
+let index = 0
+
 
 function paint(){
+  if(coordinates.value.x !== prevX || coordinates.value.y !== prevY){
+    synth.triggerAttackRelease(notes[index], noteDurations[index]);
+    if(index < notes.length){
+      index++
+    } else {
+      index = 0
+    }
+  }
   ctx.globalAlhpa = 1
   ctx.save()
   let dist = distanceBetween({x: prevX, y: prevY}, {x: coordinates.value.x, y: coordinates.value.y});
   let angle = angleBetween({x: prevX, y: prevY},  {x: coordinates.value.x, y: coordinates.value.y});
   if(started){
      // Calculate number of circles to draw
-     let numCircles = Math.min(Math.floor(dist / 20), 10); // 10 circles max, adjust as needed
+     let numCircles = Math.min(Math.floor(dist / 20), 5); // 5 circles max, adjust as needed
     for (let i = 0; i <= numCircles; i++) {
       // Calculate the intermediate point
       let x = prevX + (Math.sin(angle) * (i * (dist / numCircles)));
@@ -115,7 +161,6 @@ function paint(){
     ctx.beginPath()
     started = true
   }
-  // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   for (var i = 0; i < points.length; i++) {
    ctx.fillStyle = points[i].color; // Use the stored color
     ctx.beginPath();
@@ -124,6 +169,7 @@ function paint(){
       points[i].x, points[i].y, points[i].radius, 
       false, Math.PI * 2, false);
     ctx.fill();
+    // synth.triggerAttackRelease("C4", "8n");
   }
   prevX = coordinates.value.x
   prevY = coordinates.value.y

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "lazy-brush": "^2.0.1",
+    "tone": "^15.0.4",
     "vue": "^3.4.31"
   },
   "devDependencies": {
