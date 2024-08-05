@@ -24,7 +24,6 @@ onMounted(() => {
     detector.on('hand', result => {
     hand = result[0]
     })
-    console.log(hand)
 
 
     function drawCameraIntoCanvas() {
