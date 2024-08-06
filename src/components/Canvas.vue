@@ -11,8 +11,33 @@ let detector;
 let started = false;
 let prevX = 0
 let prevY = 0
-let points = []
+let bubbles = []
 let index = 0
+
+class Bubble {
+  constructor(x, y, radius, opacity, color){
+    this.x = x
+    this.y = y
+    this.radius = radius
+    this.opacity = opacity
+    this.color = color
+    this.dx = Math.random() * 10
+    this.dy = Math.random() * 5
+  }
+  draw(){
+    ctx.beginPath()
+    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
+    ctx.strokeStyle = this.color
+    ctx.fillStyle = this.color
+    ctx.globalAlhpa = this.opacity
+    ctx.fill()
+    ctx.stroke()
+  }
+  move(){
+    this.x = this.x + this.dx
+    this.y = this.y | this.dy
+  }
+}
 
 
 
@@ -24,8 +49,7 @@ onMounted(() => {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    // canvas settings
-    // ctx.strokeStyle = 'white'
+
     ctx.scale(-1, 1);
     ctx.translate(-canvas.width, 0);
     ctx.lineCap = "round";
@@ -35,10 +59,10 @@ onMounted(() => {
 
     function drawCameraIntoCanvas() {
         ctx.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
+        addBubblesToArr()
         paint()
         window.requestAnimationFrame(drawCameraIntoCanvas);
       }
-      // Loop over the drawCameraIntoCanvas function
       drawCameraIntoCanvas();
 
 
@@ -62,13 +86,31 @@ const noteDurations = [
   "4n", "4n", "4n", "2n" // Resolution down (last note is a half note)
 ];
 
+function addBubblesToArr(){
+  let dist = distanceBetween({x: prevX, y: prevY}, {x: store.brushX, y: store.brushY});
+  let angle = angleBetween({x: prevX, y: prevY},  {x: store.brushX, y: store.brushY});
+     // Calculate number of circles to draw
+    let numCircles = Math.min(Math.floor(dist / 20), 5); // 5 circles max, adjust as needed
+    for (let i = 0; i <= numCircles; i++) {
+      // Calculate the intermediate point
+      let x = prevX + (Math.sin(angle) * (i * (dist / numCircles)));
+      let y = prevY + (Math.cos(angle) * (i * (dist / numCircles)));
+      const point = {
+        x: x,
+        y: y,
+        radius: Math.random() * 20,
+        opacity: Math.random(),
+        color: getRandomColor()
+      }
+      const bubble = new Bubble(x, y, point.radius, point.opacity, point.color)
+      bubbles.push(bubble)
+    }
+  prevX = store.brushX
+  prevY = store.brushY
+}
 
-
-
-
-
-function paint(){
-  if(store.brushX !== prevX || store.brushY !== prevY){
+function sound(){
+    if(store.brushX !== prevX || store.brushY !== prevY){
     synth.triggerAttackRelease(notes[index], noteDurations[index]);
     if(index < notes.length){
       index++
@@ -76,44 +118,19 @@ function paint(){
       index = 0
     }
   }
-  let dist = distanceBetween({x: prevX, y: prevY}, {x: store.brushX, y: store.brushY});
-  let angle = angleBetween({x: prevX, y: prevY},  {x: store.brushX, y: store.brushY});
-  if(started){
-     // Calculate number of circles to draw
-     let numCircles = Math.min(Math.floor(dist / 20), 5); // 5 circles max, adjust as needed
-    for (let i = 0; i <= numCircles; i++) {
-      // Calculate the intermediate point
-      let x = prevX + (Math.sin(angle) * (i * (dist / numCircles)));
-      let y = prevY + (Math.cos(angle) * (i * (dist / numCircles)));
-
-      // Push circle details to the points array
-      points.push({
-        x: x,
-        y: y,
-        radius: Math.random() * 20,
-        opacity: Math.random(),
-        color: getRandomColor()
-      });
-    }
-  }
-  else {
-    ctx.beginPath()
-    started = true
-  }
-  for (var i = 0; i < points.length; i++) {
-   ctx.fillStyle = points[i].color; // Use the stored color
-    ctx.beginPath();
-    ctx.globalAlpha = points[i].opacity;
-    ctx.arc(
-      points[i].x, points[i].y, points[i].radius, 
-      false, Math.PI * 2, false);
-    ctx.fill();
-    // synth.triggerAttackRelease("C4", "8n");
-  }
-  prevX = store.brushX
-  prevY = store.brushY
-  ctx.stroke()
 }
+
+
+function paint(){
+  bubbles.forEach(bubble => {
+    sound()
+    bubble.draw()
+    bubble.move()
+  })
+}
+  
+
+
 // Helper function to get a random color
 function getRandomColor() {
   const colors = ['red', 'orange', 'yellow', 'green', 'lightblue', 'blue', 'purple'];
@@ -134,20 +151,6 @@ function distanceBetween(point1, point2) {
 function angleBetween(point1, point2) {
     return Math.atan2( point2.x - point1.x, point2.y - point1.y );
 }
-
-
-// function drawPixels(x, y) {
-//   for (var i = -10; i < 10; i+= 4) {
-//     for (var j = -10; j < 10; j+= 4) {
-//       if (Math.random() > 0.5) {
-//         ctx.fillStyle = ['red', 'orange', 'yellow', 'green', 
-//                          'light-blue', 'blue', 'purple'][Math.round(Math.random() * 6)];
-//         ctx.fillRect(x+i, y+j, 4, 4);
-//       }
-//     }
-//   }
-// }
-
 
 
 

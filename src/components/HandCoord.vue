@@ -47,18 +47,9 @@ function getCoordinates(){
 }
 
 
-
-
-
 function modelReady() {
   console.log("model ready");
 }
-
-
-
-
-
-
 
 </script>
 
