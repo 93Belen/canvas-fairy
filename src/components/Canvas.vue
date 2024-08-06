@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import * as Tone from "tone"
 import { useCoordinatesStore } from '../stores/coordinates'
 const store = useCoordinatesStore()
 
@@ -8,15 +7,7 @@ let video, canvas, ctx;
 let prevX = 0
 let prevY = 0
 let bubbles = []
-let index = 0
-// ========================================
-const notes = [
-  "C4", "E4", "G4", "C5", // Cheerful start
-  "E4", "D4", "C4", // Descending notes
-  "G4", "A4", "G4", // Up and down motion
-  "C5", "B4", "A4", // Climbing up and back
-  "F4", "E4", "D4", "C4" // Resolution back down
-];
+
 // ========================================
 
 class Bubble {
@@ -75,10 +66,6 @@ onMounted(() => {
 
     ctx.scale(-1, 1);
     ctx.translate(-canvas.width, 0);
-    ctx.lineCap = "round";
-    ctx.lineWidth = 5
-    ctx.lineJoin = 'round'
-    ctx.shadowBlur = 7;
 
     function drawCameraIntoCanvas() {
         ctx.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
