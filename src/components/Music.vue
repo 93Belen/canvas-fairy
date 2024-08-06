@@ -16,7 +16,18 @@ const notes = [
     "A4", "G4", "F#4", "E4", // Descending
     "D4", "E4", "F#4", "G4", // Ascending
     "E4", "D4", "C4", // Resolution back down
-]
+    "C4", "E4", "G4", "A4", // New Phrase
+    "G4", "F#4", "E4", "D4", // Descending
+    "E4", "G4", "A4", "B4", // Climbing
+    "A4", "G4", "F#4", "E4", // Descending
+    "C4", "D4", "E4", "G4", // Ascending
+    "E4", "D4", "C4", "B3", // Descending
+    "A3", "C4", "D4", "C4", // Gentle Climb
+    "B3", "A3", "G3", "C4", // Resolution
+];
+
+
+
 
 
 // Timing settings
@@ -34,7 +45,17 @@ onBeforeMount(async () => {
 });
 
 function playNotes() {
-    const synth = new Tone.Synth().toDestination();
+    const synth = new Tone.Synth({
+            oscillator: {
+                type: "sine" // Use sine wave for a soft sound
+            },
+            envelope: {
+                attack: 0.1, // Short attack time
+                decay: 0.2, // Short decay time
+                sustain: 0.5, // Sustain level
+                release: 0.5 // Release time
+            }
+        }).toDestination();
     noteIndex = 0; // Reset note index for each play session
     isPlaying = true;
 
