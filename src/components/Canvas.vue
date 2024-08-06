@@ -12,11 +12,10 @@ let bubbles = []
 let index = 0
 
 class Bubble {
-  constructor(x, y, radius, opacity, color){
+  constructor(x, y, radius, color){
     this.x = x;
     this.y = y;
     this.radius = radius;
-    this.opacity = opacity;
     this.color = color;
     this.dx = Math.random() * 10;
     this.dy = Math.random() * 5;
@@ -27,7 +26,7 @@ class Bubble {
     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
 
     // Log parameters to debug
-    console.log('Drawing bubble at:', { x: this.x, y: this.y, radius: this.radius });
+    // console.log('Drawing bubble at:', { x: this.x, y: this.y, radius: this.radius });
 
     // Create radial gradient with error handling
     if (isFinite(this.x) && isFinite(this.y) && isFinite(this.radius)) {
@@ -40,20 +39,11 @@ class Bubble {
         this.radius
       );
 
-      gradient.addColorStop(0.3, "rgba(255, 255, 255, 0.3)");
-      gradient.addColorStop(0.95, this.color);
+      gradient.addColorStop(0.4, `hsla(${this.color}, 60%, 60%, 0.4)`);
+      gradient.addColorStop(0.95, `hsla(${this.color}, 60%, 60%, 0.95)`);
 
       ctx.fillStyle = gradient;
-      // ctx.globalAlpha = this.opacity;  // Corrected typo
       ctx.fill();
-      // ctx.stroke();
-    } else {
-      console.error('Invalid bubble parameters:', {
-        x: this.x,
-        y: this.y,
-        radius: this.radius,
-        opacity: this.opacity
-      });
     }
   }
   
@@ -124,10 +114,9 @@ function addBubblesToArr(){
         x: x,
         y: y,
         radius: Math.random() * 20,
-        opacity: Math.random(),
-        color: getRandomColor()
+        color: Math.round(Math.random() * 255)
       }
-      const bubble = new Bubble(x, y, point.radius, point.opacity, point.color)
+      const bubble = new Bubble(x, y, point.radius, point.color)
       bubbles.push(bubble)
     }
   prevX = store.brushX
