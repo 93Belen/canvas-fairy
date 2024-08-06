@@ -1,13 +1,16 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useCoordinatesStore } from '../stores/coordinates'
+import { useMusicStore } from '../stores/musicStore'
 import * as Tone from "tone";
+import { watch } from 'vue';
 
-const store = useCoordinatesStore()
+Tone.start()
+const store = useMusicStore()
+const synth = new Tone.Synth().toDestination();
 
-onMounted(() => {
-    
+watch(store.index, () => {
+synth.triggerAttackRelease(store.notes[store.index], "8n");
 })
+
 
 
 

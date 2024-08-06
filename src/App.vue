@@ -2,6 +2,7 @@
 import Camera from './components/Camera.vue'
 import Canvas from './components/Canvas.vue'
 import HandCoord from './components/HandCoord.vue'
+import Music from './components/Music.vue'
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import HandCoord from './components/HandCoord.vue'
     <Camera/>
     <Canvas/>
     <HandCoord/>
+    <Music/>
   </div>
 </template>
 
