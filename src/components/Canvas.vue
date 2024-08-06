@@ -6,9 +6,6 @@ const store = useCoordinatesStore()
 
 const synth = new Tone.Synth().toDestination();
 let video, canvas, ctx;
-let hand;
-let detector;
-let started = false;
 let prevX = 0
 let prevY = 0
 let bubbles = []
