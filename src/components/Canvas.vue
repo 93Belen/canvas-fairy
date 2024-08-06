@@ -13,28 +13,56 @@ let index = 0
 
 class Bubble {
   constructor(x, y, radius, opacity, color){
-    this.x = x
-    this.y = y
-    this.radius = radius
-    this.opacity = opacity
-    this.color = color
-    this.dx = Math.random() * 10
-    this.dy = Math.random() * 5
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.opacity = opacity;
+    this.color = color;
+    this.dx = Math.random() * 10;
+    this.dy = Math.random() * 5;
   }
+  
   draw(){
-    ctx.beginPath()
-    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
-    ctx.strokeStyle = this.color
-    ctx.fillStyle = this.color
-    ctx.globalAlhpa = this.opacity
-    ctx.fill()
-    ctx.stroke()
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+
+    // Log parameters to debug
+    console.log('Drawing bubble at:', { x: this.x, y: this.y, radius: this.radius });
+
+    // Create radial gradient with error handling
+    if (isFinite(this.x) && isFinite(this.y) && isFinite(this.radius)) {
+      const gradient = ctx.createRadialGradient(
+        this.x,
+        this.y,
+        1,
+        this.x + 0.5,
+        this.y + 0.5,
+        this.radius
+      );
+
+      gradient.addColorStop(0.3, "rgba(255, 255, 255, 0.3)");
+      gradient.addColorStop(0.95, this.color);
+
+      ctx.fillStyle = gradient;
+      // ctx.globalAlpha = this.opacity;  // Corrected typo
+      ctx.fill();
+      // ctx.stroke();
+    } else {
+      console.error('Invalid bubble parameters:', {
+        x: this.x,
+        y: this.y,
+        radius: this.radius,
+        opacity: this.opacity
+      });
+    }
   }
+  
   move(){
-    this.x = this.x + this.dx
-    this.y = this.y | this.dy
+    	this.x = this.x - this.dx;
+		  this.y = this.y - this.dy;
   }
 }
+
 
 
 
