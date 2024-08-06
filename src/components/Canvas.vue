@@ -4,12 +4,20 @@ import * as Tone from "tone"
 import { useCoordinatesStore } from '../stores/coordinates'
 const store = useCoordinatesStore()
 
-const synth = new Tone.Synth().toDestination();
 let video, canvas, ctx;
 let prevX = 0
 let prevY = 0
 let bubbles = []
 let index = 0
+// ========================================
+const notes = [
+  "C4", "E4", "G4", "C5", // Cheerful start
+  "E4", "D4", "C4", // Descending notes
+  "G4", "A4", "G4", // Up and down motion
+  "C5", "B4", "A4", // Climbing up and back
+  "F4", "E4", "D4", "C4" // Resolution back down
+];
+// ========================================
 
 class Bubble {
   constructor(x, y, radius, color){
@@ -54,7 +62,7 @@ class Bubble {
 }
 
 
-
+// ========================================
 
 
 onMounted(() => {
@@ -83,23 +91,7 @@ onMounted(() => {
 
 })
 
-// helpers =====================
-
-const notes = [
-  "C4", "E4", "G4", "C5", // Cheerful start
-  "E4", "D4", "C4", // Descending notes
-  "G4", "A4", "G4", // Up and down motion
-  "C5", "B4", "A4", // Climbing up and back
-  "F4", "E4", "D4", "C4" // Resolution back down
-];
-
-const noteDurations = [
-  "4n", "4n", "4n", "4n", // Cheerful start (4 quarter notes)
-  "4n", "4n", "4n", // Descending notes (3 quarter notes)
-  "4n", "4n", "4n", // Up and down motion (3 quarter notes)
-  "4n", "4n", "4n", // Climbing back (3 quarter notes)
-  "4n", "4n", "4n", "2n" // Resolution down (last note is a half note)
-];
+// ========================================
 
 function addBubblesToArr(){
   let dist = distanceBetween({x: prevX, y: prevY}, {x: store.brushX, y: store.brushY});
@@ -123,41 +115,18 @@ function addBubblesToArr(){
   prevY = store.brushY
 }
 
-function sound(){
-    if(store.brushX !== prevX || store.brushY !== prevY){
-    synth.triggerAttackRelease(notes[index], noteDurations[index]);
-    if(index < notes.length){
-      index++
-    } else {
-      index = 0
-    }
-  }
-}
+let lastSoundTime = 0; // Track the last time sound was played
+const soundCooldown = 200; // Minimum time between sounds in milliseconds
+let prev = {x: 0, y: 0}
 
-
+// ========================================
 function paint(){
   bubbles.forEach(bubble => {
-    sound()
     bubble.draw()
     bubble.move()
   })
 }
-  
-
-
-// Helper function to get a random color
-function getRandomColor() {
-  const colors = ['red', 'orange', 'yellow', 'green', 'lightblue', 'blue', 'purple'];
-  return colors[Math.floor(Math.random() * colors.length)]; // Select a random color from the array
-}
-
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-})
-
-
+// ========================================
 
 function distanceBetween(point1, point2) {
     return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
@@ -165,6 +134,13 @@ function distanceBetween(point1, point2) {
 function angleBetween(point1, point2) {
     return Math.atan2( point2.x - point1.x, point2.y - point1.y );
 }
+
+// ========================================
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+})
+
 
 
 
