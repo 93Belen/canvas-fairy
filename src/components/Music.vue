@@ -2,31 +2,14 @@
 import { useMusicStore } from '../stores/musicStore'
 import * as Tone from "tone";
 import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue';
-import { useCoordinatesStore } from '../stores/coordinates';
+import { useCoordinatesStore } from '../stores/coordinates'
 
-const store = useCoordinatesStore();
+const musicStore = useMusicStore()
+const store = useCoordinatesStore()
+
 
 // Define the notes for "Under the Sea"
-const notes = [
-    "A4", "C5", "E5", "D5", // First Phrase
-    "C5", "B4", "A4", "G4", // Descending
-    "A4", "C5", "E5", "D5", // Second Phrase
-    "C5", "B4", "A4", "G4", // Descending
-    "F#4", "G4", "A4", "C5", // Climbing
-    "A4", "G4", "F#4", "E4", // Descending
-    "D4", "E4", "F#4", "G4", // Ascending
-    "E4", "D4", "C4", // Resolution back down
-    "C4", "E4", "G4", "A4", // New Phrase
-    "G4", "F#4", "E4", "D4", // Descending
-    "E4", "G4", "A4", "B4", // Climbing
-    "A4", "G4", "F#4", "E4", // Descending
-    "C4", "D4", "E4", "G4", // Ascending
-    "E4", "D4", "C4", "B3", // Descending
-    "A3", "C4", "D4", "C4", // Gentle Climb
-    "B3", "A3", "G3", "C4", // Resolution
-];
-
-
+const notes = musicStore.notes
 
 
 
@@ -36,13 +19,15 @@ const STOP_DURATION = 1000; // Duration to wait before stopping playback when br
 
 let lastBrushPosition = { x: store.brushX, y: store.brushY };
 let isPlaying = false;
-let noteIndex = 0;
 let timer = null;
 let stopTimer = null;
 
 onBeforeMount(async () => {
     await Tone.start();
 });
+
+
+
 
 function playNotes() {
     const synth = new Tone.Synth({
@@ -56,20 +41,13 @@ function playNotes() {
                 release: 0.5 // Release time
             }
         }).toDestination();
-    noteIndex = 0; // Reset note index for each play session
     isPlaying = true;
 
     const playNextNote = () => {
-        if (noteIndex < notes.length) {
             const now = Tone.now();
-            const note = notes[noteIndex];
+            const note = notes[musicStore.index - 1];
             synth.triggerAttack(note, now);
             synth.triggerRelease(now + NOTE_DURATION * 0.8); // Release after 80% of the duration
-            noteIndex++;
-        } else {
-            clearInterval(timer); // Stop the timer when all notes have been played
-            isPlaying = false; // Reset playing status
-        }
     };
 
     // Play the first note immediately
