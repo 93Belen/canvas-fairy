@@ -30,17 +30,18 @@ onBeforeMount(async () => {
 
 
 function playNotes() {
-    const synth = new Tone.Synth({
-            oscillator: {
-                type: "sine" // Use sine wave for a soft sound
-            },
-            envelope: {
-                attack: 0.1, // Short attack time
-                decay: 0.2, // Short decay time
-                sustain: 0.5, // Sustain level
-                release: 0.5 // Release time
-            }
-        }).toDestination();
+const synth = new Tone.Synth({
+    oscillator: {
+        type: "sine" // Use a sine wave for a softer sound
+    },
+    // envelope: {
+    //     attack: 0.05, // Slightly longer attack for a more piano-like onset
+    //     decay: 0.1,   // Shorter decay for a quick response
+    //     sustain: 0.1, // Increased sustain for a fuller sound
+    //     release: 0.5  // Longer release for a smoother fade out
+    // }
+}).toDestination();
+
     isPlaying = true;
 
     const playNextNote = () => {
