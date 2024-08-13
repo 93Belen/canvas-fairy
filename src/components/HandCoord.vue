@@ -10,11 +10,11 @@ let hand = []
 let detector;
 let brain;
 let optionsModel = {
-    inputs: 2,
-    outputs: 12,
-    task: 'classification',
-    debug: true
-}
+    inputs: ['x', 'y'],
+    outputs: ['frequency'],
+    task: 'regression',
+    debug: 'true',
+  }
 const modelInfo = {
   model: "./model/model.json",
   metadata: "./model/model_meta.json",
@@ -42,7 +42,7 @@ let options = {
 
 
 function gotResults(error, results){
-    const num = Number(results[0].label)
+    const num = Math.round(results[0].frequency)
     musicStore.changeIndex(num)
 }
 
@@ -56,22 +56,25 @@ onMounted(() => {
     })
 
   //   // Neuralnetwork
-  //   brain = ml5.neuralNetwork(optionsModel);
-  //   brain.load(modelInfo, classify)
-  //   function classify(){
-  //     if(hand !== undefined){
-  //       let inputs = [store.x , store.y]
-  //       brain.classify(inputs, gotResults)
-  //     }
-  // }
+    brain = ml5.neuralNetwork(optionsModel);
+    brain.load(modelInfo, classify)
+
+    function classify(){
+      if(hand.length > 0){
+        if(hand[0].pose.score > 0.3 && store.coor.length > 0){
+        let inputs = [store.coor[0].x , store.coor[0].y]
+        brain.predict(inputs, gotResults)
+      }
+      }
+  }
 
 
 
     function drawCameraIntoCanvas() {
         getCoordinates()
-        // if(hand){
-        //   classify()
-        // }
+        if(hand.length > 0){
+          classify()
+        }
         window.requestAnimationFrame(drawCameraIntoCanvas);
       }
       // Loop over the drawCameraIntoCanvas function
@@ -97,7 +100,6 @@ function getCoordinates(){
         arr.push({x: x, y: y})
       }
     });
-    store.changeCoordinates([])
     store.changeCoordinates(arr)
   }
 }
