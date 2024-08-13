@@ -81,8 +81,12 @@ onMounted(() => {
 // ========================================
 
 function addBubblesToArr(){
-  let dist = distanceBetween({x: prevX, y: prevY}, {x: store.brushX, y: store.brushY});
-  let angle = angleBetween({x: prevX, y: prevY},  {x: store.brushX, y: store.brushY});
+  store.getBrushPosition.forEach((brush, index) => {
+    if(index > 0){
+      let brushX = brush.x
+    let brushY = brush.y
+  let dist = distanceBetween({x: prevX, y: prevY}, {x: brushX, y: brushY});
+  let angle = angleBetween({x: prevX, y: prevY},  {x: brushX, y: brushY});
      // Calculate number of circles to draw
     let numCircles = Math.min(Math.floor(dist / 20), 5); // 5 circles max, adjust as needed
     for (let i = 0; i <= numCircles; i++) {
@@ -98,8 +102,10 @@ function addBubblesToArr(){
       const bubble = new Bubble(x, y, point.radius, point.color)
       bubbles.push(bubble)
     }
-  prevX = store.brushX
-  prevY = store.brushY
+  prevX = brushX
+  prevY = brushY
+    }
+  })
 }
 
 let lastSoundTime = 0; // Track the last time sound was played

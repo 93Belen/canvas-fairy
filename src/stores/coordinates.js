@@ -8,23 +8,22 @@ const lazy = new LazyBrush({
 
 export const useCoordinatesStore = defineStore('coordinates', {
     state: () => ({ 
-        x: 0, 
-        y: 0,
-        brushX: 0,
-        brushY: 0 
+        coor: [],
     }),
-    actions: {
-      changeCoordinates(x, y) {
-        this.x = x
-        this.y = y
-        lazy.update({ x: x, y: y }, { friction: 0 })
+    getters: {
+      getBrushPosition: (state) => {
+        let arr = []
+        state.coor.forEach(hand => {
+        lazy.update({ x: hand.x, y: hand.y }, { friction: 0 })
         let brush = lazy.getBrushCoordinates()
-        this.brushX = brush.x
-        this.brushY = brush.y
-      },
-      changeBrushCoordinates(x, y){
-          this.brushX = x
-          this.brushY = y
+        arr.push(brush)
+        })
+        return arr;
+      }
+    },
+    actions: {
+      changeCoordinates(arr) {
+        this.coor = arr
       }
     },
   })

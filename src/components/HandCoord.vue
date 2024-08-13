@@ -6,7 +6,7 @@ const musicStore = useMusicStore()
 const store = useCoordinatesStore()
 
 let video;
-let hand;
+let hand = []
 let detector;
 let brain;
 let optionsModel = {
@@ -21,13 +21,25 @@ const modelInfo = {
   weights: "./model/model.weights.bin",
 }
 
+
 let options = {
-  flipHorizontal: false, // boolean value for if the video should be flipped, defaults to false
-  maxContinuousChecks: Infinity, // How many frames to go without running the bounding box detector. Defaults to infinity, but try a lower value if the detector is consistently producing bad predictions.
-  detectionConfidence: 0.8, // Threshold for discarding a prediction. Defaults to 0.8.
-  scoreThreshold: 0.9, // A threshold for removing multiple (likely duplicate) detections based on a "non-maximum suppression" algorithm. Defaults to 0.75
-  iouThreshold: 0.3, 
-}
+  architecture: 'MobileNetV1',
+  imageScaleFactor: 0.3,
+  outputStride: 16,
+  flipHorizontal: false,
+  minConfidence: 0.5,
+  maxPoseDetections: 5,
+  scoreThreshold: 0.5,
+  nmsRadius: 20,
+  detectionType: 'multiple',
+  inputResolution: 513,
+  multiplier: 0.75,
+  quantBytes: 2,
+};
+
+
+
+
 
 function gotResults(error, results){
     const num = Number(results[0].label)
@@ -38,28 +50,28 @@ function gotResults(error, results){
 
 onMounted(() => {
     video = document.getElementById('video')
-    detector = ml5.handpose(video, options, modelReady)
-    detector.on('hand', result => {
-    hand = result[0]
+    detector = ml5.poseNet(video, options, modelReady)
+    detector.on('pose', result => {
+    hand = result
     })
 
-    // Neuralnetwork
-    brain = ml5.neuralNetwork(optionsModel);
-    brain.load(modelInfo, classify)
-    function classify(){
-      if(hand !== undefined){
-        let inputs = [store.x , store.y]
-        brain.classify(inputs, gotResults)
-      }
-  }
+  //   // Neuralnetwork
+  //   brain = ml5.neuralNetwork(optionsModel);
+  //   brain.load(modelInfo, classify)
+  //   function classify(){
+  //     if(hand !== undefined){
+  //       let inputs = [store.x , store.y]
+  //       brain.classify(inputs, gotResults)
+  //     }
+  // }
 
 
 
     function drawCameraIntoCanvas() {
         getCoordinates()
-        if(hand){
-          classify()
-        }
+        // if(hand){
+        //   classify()
+        // }
         window.requestAnimationFrame(drawCameraIntoCanvas);
       }
       // Loop over the drawCameraIntoCanvas function
@@ -71,10 +83,15 @@ onMounted(() => {
 // helpers =====================
 
 function getCoordinates(){
-  if(hand){
-    let x = hand.annotations.indexFinger[3][0]
-    let y = hand.annotations.indexFinger[3][1]
-    store.changeCoordinates(x, y)
+  if(hand.length > 0){
+    let arr = []
+    hand.forEach(element => {
+      let x = element.pose.leftWrist.x
+      let y = element.pose.leftWrist.y
+      arr.push({x: x, y: y})
+    });
+    store.changeCoordinates([])
+    store.changeCoordinates(arr)
   }
 }
 
