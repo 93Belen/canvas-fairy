@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { LazyBrush } from 'lazy-brush'
 const lazy = new LazyBrush({
-    radius: 100,
+    radius: 150,
     enabled: true,
     initialPoint: { x: 0, y: 0 }
   })

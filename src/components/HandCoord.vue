@@ -86,9 +86,16 @@ function getCoordinates(){
   if(hand.length > 0){
     let arr = []
     hand.forEach(element => {
-      let x = element.pose.leftWrist.x
-      let y = element.pose.leftWrist.y
-      arr.push({x: x, y: y})
+      if(element.pose.leftWrist.confidence > 0.5){
+        let x = element.pose.leftWrist.x
+        let y = element.pose.leftWrist.y
+        arr.push({x: x, y: y})
+      }
+      if(element.pose.rightWrist.confidence > 0.5){
+        let x = element.pose.rightWrist.x
+        let y = element.pose.rightWrist.y
+        arr.push({x: x, y: y})
+      }
     });
     store.changeCoordinates([])
     store.changeCoordinates(arr)

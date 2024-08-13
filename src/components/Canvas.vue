@@ -81,8 +81,7 @@ onMounted(() => {
 // ========================================
 
 function addBubblesToArr(){
-  store.getBrushPosition.forEach((brush, index) => {
-    if(index > 0){
+  store.getBrushPosition.forEach(brush => {
       let brushX = brush.x
     let brushY = brush.y
   let dist = distanceBetween({x: prevX, y: prevY}, {x: brushX, y: brushY});
@@ -104,7 +103,6 @@ function addBubblesToArr(){
     }
   prevX = brushX
   prevY = brushY
-    }
   })
 }
 
