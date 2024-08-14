@@ -95,7 +95,7 @@ function addBubblesToArr(){
       const point = {
         x: x,
         y: y,
-        radius: Math.random() * 20,
+        radius: Math.random() * 15,
         color: Math.round(Math.random() * 255)
       }
       const bubble = new Bubble(x, y, point.radius, point.color)

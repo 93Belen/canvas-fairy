@@ -16,21 +16,20 @@ const NOTE_DURATION = 0.5; // Duration of each note in seconds
 
 let timer;
 let synth;
-let synth2;
 let lastIndex;
 
 onBeforeMount(async () => {
     await Tone.start();
     synth = new Tone.Synth({
-    // oscillator: {
-    //     type: "sine" // Use a sine wave for a softer sound
-    // },
-    // envelope: {
-    //     attack: 0.05, // Slightly longer attack for a more piano-like onset
-    //     decay: 0.1,   // Shorter decay for a quick response
-    //     sustain: 0.1, // Increased sustain for a fuller sound
-    //     release: 0.5  // Longer release for a smoother fade out
-    // }
+    oscillator: {
+        type: "sine" // Use a sine wave for a softer sound
+    },
+    envelope: {
+        attack: 0.05, // Slightly longer attack for a more piano-like onset
+        decay: 0.1,   // Shorter decay for a quick response
+        sustain: 0.1, // Increased sustain for a fuller sound
+        release: 0.5  // Longer release for a smoother fade out
+    }
 }).toDestination();
 });
 
