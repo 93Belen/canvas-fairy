@@ -1,7 +1,7 @@
 <script setup>
 import { useMusicStore } from '../stores/musicStore'
 import * as Tone from "tone";
-import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue';
+import { onBeforeMount, onMounted, onUnmounted } from 'vue';
 import { useCoordinatesStore } from '../stores/coordinates'
 
 const musicStore = useMusicStore()
@@ -11,16 +11,10 @@ const store = useCoordinatesStore()
 // Define the notes for "Under the Sea"
 const notes = musicStore.notes
 
-
-
 // Timing settings
-const NOTE_DURATION = 1; // Duration of each note in seconds
-const STOP_DURATION = 1000; // Duration to wait before stopping playback when brush is stationary (in ms)
+const NOTE_DURATION = 0.5; // Duration of each note in seconds
 
-let lastBrushPosition = { x: 0, y: 0 };
-let isPlaying = false;
-let timer = null;
-let stopTimer = null;
+let timer;
 let synth;
 let lastIndex;
 
@@ -42,46 +36,10 @@ onBeforeMount(async () => {
 
 
 
-function playNotes() {
-const synth = new Tone.Synth({
-    oscillator: {
-        type: "sine" // Use a sine wave for a softer sound
-    },
-    // envelope: {
-    //     attack: 0.05, // Slightly longer attack for a more piano-like onset
-    //     decay: 0.1,   // Shorter decay for a quick response
-    //     sustain: 0.1, // Increased sustain for a fuller sound
-    //     release: 0.5  // Longer release for a smoother fade out
-    // }
-}).toDestination();
-
-    isPlaying = true;
-
-    const playNextNote = () => {
-            const now = Tone.now();
-            const note = notes[musicStore.index];
-            synth.triggerAttack(note, now);
-            synth.triggerRelease(now + NOTE_DURATION * 0.8); // Release after 80% of the duration
-    };
-
-    // Play the first note immediately
-    // playNextNote();
-    timer = setInterval(playNextNote, NOTE_DURATION * 1000); // Play next note at regular intervals
-}
-
-function stopNotes() {
-    if (timer) {
-        clearInterval(timer);
-        timer = null; // Clear the timer
-    }
-    isPlaying = false; // Reset playing status
-}
 
 // Set up a watcher to detect brush movement
 onMounted(() => {
-    setInterval(() => {
-        // if (store.getBrushPosition[0] !== lastBrushPosition) {
-        //     lastBrushPosition = { x: store.getBrushPosition[0].x, y: store.getBrushPosition[0].y }; // Update last brush position
+    timer = setInterval(() => {
         if(musicStore.index > 0 && lastIndex !== musicStore.index){
             const now = Tone.now();
            console.log(musicStore.index)
@@ -90,32 +48,12 @@ onMounted(() => {
             synth.triggerRelease(now + NOTE_DURATION * 0.8); // Release after 80% of the duration
             lastIndex = musicStore.index
         }
-          
-        //     if (!isPlaying) {
-        //         playNotes(); // Start playing notes when the brush is moving
-        //     }
-        //     // Clear stop timer if brush is moving
-        //     if (stopTimer) {
-        //         clearTimeout(stopTimer);
-        //         stopTimer = null;
-        //     }
-        // } else {
-        //     // If the brush hasn't moved, set a timer to stop playback
-        //     if (isPlaying) {
-        //         stopTimer = setTimeout(stopNotes, STOP_DURATION); // Stop notes after STOP_DURATION
-    //         }
-        // }
-    }, 1000); // Check for movement every 1s
+    }, 10); // Check for movement every 1s
 });
 
 // Clean up the timer on unmount
 onUnmounted(() => {
-    if (timer) {
-        clearInterval(timer);
-    }
-    if (stopTimer) {
-        clearTimeout(stopTimer);
-    }
+    clearInterval(timer);
 });
 </script>
 
