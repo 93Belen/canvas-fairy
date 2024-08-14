@@ -87,7 +87,7 @@ function addBubblesToArr(){
   let dist = distanceBetween({x: prevX, y: prevY}, {x: brushX, y: brushY});
   let angle = angleBetween({x: prevX, y: prevY},  {x: brushX, y: brushY});
      // Calculate number of circles to draw
-    let numCircles = Math.min(Math.floor(dist / 1), 1); // 3 circles max, adjust as needed
+    let numCircles = Math.min(Math.floor(dist / 1), 1); // 1 circles max, adjust as needed
     for (let i = 0; i <= numCircles; i++) {
       // Calculate the intermediate point
       let x = prevX + (Math.sin(angle) * (i * (dist / numCircles)));
@@ -106,8 +106,6 @@ function addBubblesToArr(){
   })
 }
 
-let lastSoundTime = 0; // Track the last time sound was played
-const soundCooldown = 200; // Minimum time between sounds in milliseconds
 let prev = {x: 0, y: 0}
 
 // ========================================

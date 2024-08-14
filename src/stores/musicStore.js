@@ -10,11 +10,7 @@ export const useMusicStore = defineStore('music', {
             "C4",
             "D4",
             "F4",
-            "G4",
-            "G4",
-            "E4",
-            "D4",
-            "C4"  // Middle C    
+            "G4"   
           ],
           index: 0
  

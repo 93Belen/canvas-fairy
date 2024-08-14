@@ -16,22 +16,26 @@ const NOTE_DURATION = 0.5; // Duration of each note in seconds
 
 let timer;
 let synth;
+let synth2;
 let lastIndex;
 
 onBeforeMount(async () => {
     await Tone.start();
     synth = new Tone.Synth({
-    oscillator: {
-        type: "sine" // Use a sine wave for a softer sound
-    },
-    envelope: {
-        attack: 0.05, // Slightly longer attack for a more piano-like onset
-        decay: 0.1,   // Shorter decay for a quick response
-        sustain: 0.1, // Increased sustain for a fuller sound
-        release: 0.5  // Longer release for a smoother fade out
-    }
+    // oscillator: {
+    //     type: "sine" // Use a sine wave for a softer sound
+    // },
+    // envelope: {
+    //     attack: 0.05, // Slightly longer attack for a more piano-like onset
+    //     decay: 0.1,   // Shorter decay for a quick response
+    //     sustain: 0.1, // Increased sustain for a fuller sound
+    //     release: 0.5  // Longer release for a smoother fade out
+    // }
 }).toDestination();
+ synth2 = new Tone.PluckSynth().toDestination();
 });
+
+
 
 
 
@@ -45,7 +49,9 @@ onMounted(() => {
            console.log(musicStore.index)
             const note = notes[musicStore.index];
             synth.triggerAttack(note, now);
-            synth.triggerRelease(now + NOTE_DURATION * 0.8); // Release after 80% of the duration
+            synth.triggerRelease(now + NOTE_DURATION * 0.8);
+            // synth2.triggerAttack(note2, now);
+            // synth2.triggerRelease(now + NOTE_DURATION * 0.8); // Release after 80% of the duration
             lastIndex = musicStore.index
         }
     }, 10); // Check for movement every 1s
