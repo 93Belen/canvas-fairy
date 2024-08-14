@@ -24,12 +24,12 @@ onBeforeMount(async () => {
     oscillator: {
         type: "sine" // Use a sine wave for a softer sound
     },
-    // envelope: {
-    //     attack: 0.05, // Slightly longer attack for a more piano-like onset
-    //     decay: 0.1,   // Shorter decay for a quick response
-    //     sustain: 0.1, // Increased sustain for a fuller sound
-    //     release: 0.5  // Longer release for a smoother fade out
-    // }
+    envelope: {
+        attack: 0.05, // Slightly longer attack for a more piano-like onset
+        decay: 0.1,   // Shorter decay for a quick response
+        sustain: 0.1, // Increased sustain for a fuller sound
+        release: 0.5  // Longer release for a smoother fade out
+    }
 }).toDestination();
 });
 
