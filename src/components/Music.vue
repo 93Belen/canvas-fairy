@@ -32,7 +32,6 @@ onBeforeMount(async () => {
     //     release: 0.5  // Longer release for a smoother fade out
     // }
 }).toDestination();
- synth2 = new Tone.PluckSynth().toDestination();
 });
 
 
@@ -50,8 +49,6 @@ onMounted(() => {
             const note = notes[musicStore.index];
             synth.triggerAttack(note, now);
             synth.triggerRelease(now + NOTE_DURATION * 0.8);
-            // synth2.triggerAttack(note2, now);
-            // synth2.triggerRelease(now + NOTE_DURATION * 0.8); // Release after 80% of the duration
             lastIndex = musicStore.index
         }
     }, 10); // Check for movement every 1s
