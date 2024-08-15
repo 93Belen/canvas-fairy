@@ -6,6 +6,7 @@ const store = useRecordingStore()
 let video;
 let recording = ref(false)
 let mediaRecorder;
+let videoChucks = []
 
 onMounted(() => {
   video = document.getElementById("video");
@@ -29,12 +30,15 @@ onMounted(() => {
       mediaRecorder = new MediaRecorder(stream)
       mediaRecorder.ondataavailable = (event) => {
         if(event.data.size > 0){
-          store.addChunk(event.data)
+          videoChucks.push(event.data)
         }
       }
-
-
-
+      // Add video blob to Pinia
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(videoChucks, { type: 'video/webm' })
+        store.setVideoBlob(blob)
+      }
+      
     })
   }
 
@@ -46,13 +50,17 @@ window.addEventListener('resize', () => {
     video.height = window.innerHeight
 })
 
-
+// Start and Stop Recording
 const record = () => {
-  if(store.recording){
-    store.stopRecord()
+  console.log(recording.value)
+  if(recording.value){
+    mediaRecorder.stop()
+    recording.value = false
   }
   else {
-    store.record()
+    store.clearVideoBlob()
+    mediaRecorder.start()
+    recording.value = true
   }
 }
 
@@ -63,7 +71,7 @@ const record = () => {
 
 <template>
     <video src="" id="video"></video>
-    <button :style="store.recording ? 'background: red' : 'background: green' " @click="record">{{ store.recording ? 'Stop' : 'Record'}}</button>
+    <button :style="recording ? 'background: red' : 'background: green' " @click="record">{{ store.recording ? 'Stop' : 'Record'}}</button>
 </template>
 
 <style scoped>
