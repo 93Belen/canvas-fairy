@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 export const useRecordingStore = defineStore('recording', {
   state: () => ({
     videoBlob: null, // Store the Blob here
+    uploading: false
   }),
   actions: {
     setVideoBlob(blob) {
@@ -12,5 +13,11 @@ export const useRecordingStore = defineStore('recording', {
     clearVideoBlob() {
       this.videoBlob = null; // Clear the Blob
     },
+    startUploading(){
+        this.uploading = true
+    },
+    doneUploading(){
+        this.uploading = false
+    }
   },
 });
