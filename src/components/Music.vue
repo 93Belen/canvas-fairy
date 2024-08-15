@@ -42,7 +42,6 @@ onMounted(() => {
     timer = setInterval(() => {
         if(musicStore.index > 0 && lastIndex !== musicStore.index){
             const now = Tone.now();
-           console.log(musicStore.index)
             const note = notes[musicStore.index];
             synth.triggerAttack(note, now);
             synth.triggerRelease(now + NOTE_DURATION * 0.8);

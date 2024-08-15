@@ -4,7 +4,8 @@ import { defineStore } from 'pinia';
 export const useRecordingStore = defineStore('recording', {
   state: () => ({
     videoBlob: null, // Store the Blob here
-    uploading: false
+    uploading: false,
+    videoUrl: ''
   }),
   actions: {
     setVideoBlob(blob) {
@@ -18,6 +19,9 @@ export const useRecordingStore = defineStore('recording', {
     },
     doneUploading(){
         this.uploading = false
+    },
+    updateVideoUrl(url = ''){
+      this.videoUrl = url
     }
   },
 });

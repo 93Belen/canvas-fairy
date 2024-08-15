@@ -6,6 +6,7 @@ import { socket }from '../socket'
 
 socket.on('videoUrl', (url) => {
 console.log(url)
+store.updateVideoUrl(url)
 })
 
 watch(() => store.videoBlob, (newBlob) => {

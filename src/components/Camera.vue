@@ -54,27 +54,42 @@ window.addEventListener('resize', () => {
     video.height = window.innerHeight
 })
 
+let interval;
+let timeOutStart;
+let timeOutStop;
+
 // Start and Stop Recording
 const record = () => {
+  //  Stop the recording
   if(recording.value){
+      clearInterval(interval)
+      clearTimeout(timeOutStart)
+      clearTimeout(timeOutStop)
+      timeOut.value = 5
       store.clearVideoBlob()
       mediaRecorder.stop()
       recording.value = false
   }
+  //  Start the recording
   else {
+    //  Time out counting down
     recording.value = true
-    let interval = setInterval(() => {
+    interval = setInterval(() => {
         timeOut.value--
     }, 1000)
-    setTimeout(() => {
+    // After 5 secs start recording
+    timeOutStart = setTimeout(() => {
       clearInterval(interval)
       timeOut.value = 5
       store.clearVideoBlob()
       mediaRecorder.start()
     }, 5000)
   }
-  setTimeout(() => {
+  //  After 1 minute max, stop recording
+  timeOutStop = setTimeout(() => {
     clearInterval(interval)
+    clearTimeout(timeOutStart)
+    clearTimeout(timeOutStop)
     timeOut.value = 5
     store.clearVideoBlob()
     mediaRecorder.stop()
