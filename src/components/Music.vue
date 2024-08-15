@@ -15,12 +15,8 @@ const notes = musicStore.notes
 const NOTE_DURATION = 0.5; // Duration of each note in seconds
 
 let timer;
-let synth;
 let lastIndex;
-
-onBeforeMount(async () => {
-    await Tone.start();
-    synth = new Tone.Synth({
+const synth = new Tone.Synth({
     oscillator: {
         type: "sine" // Use a sine wave for a softer sound
     },
@@ -31,6 +27,8 @@ onBeforeMount(async () => {
         release: 0.5  // Longer release for a smoother fade out
     }
 }).toDestination();
+onBeforeMount(async () => {
+    await Tone.start();
 });
 
 
