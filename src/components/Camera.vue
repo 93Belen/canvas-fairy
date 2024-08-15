@@ -37,6 +37,7 @@ onMounted(() => {
       mediaRecorder.onstop = () => {
         const blob = new Blob(videoChucks, { type: 'video/webm' })
         store.setVideoBlob(blob)
+        videoChucks = []
       }
       
     })
@@ -52,7 +53,6 @@ window.addEventListener('resize', () => {
 
 // Start and Stop Recording
 const record = () => {
-  console.log(recording.value)
   if(recording.value){
     mediaRecorder.stop()
     recording.value = false
