@@ -10,9 +10,20 @@ socket.on('connect', () => {
     console.log('Connected to the Socket.IO server:', socket.id); // Socket ID is logged
 });
 
+socket.on('videoUrl', (url) => {
+console.log(url)
+})
 
-watch(() => store.videoBlob, (n) => {
-  socket.emit('sendVideoBlob', 'holi')
+
+watch(() => store.videoBlob, (newBlob) => {
+    if(newBlob){
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(newBlob); // Read the Blob as an ArrayBuffer
+        reader.onloadend = () => {
+        const arrayBuffer = reader.result; // Get the ArrayBuffer
+        socket.emit('sendVideoBlob', arrayBuffer); // Send the ArrayBuffer to the server
+        }
+    }
 })
 
 
