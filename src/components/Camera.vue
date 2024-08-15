@@ -71,7 +71,7 @@ const record = () => {
 
 <template>
     <video src="" id="video"></video>
-    <button :style="recording ? 'background: red' : 'background: green' " @click="record">{{ store.recording ? 'Stop' : 'Record'}}</button>
+    <button :style="recording ? 'background: red' : 'background: green' " @click="record">{{ recording ? 'Stop' : 'Record'}}</button>
 </template>
 
 <style scoped>
