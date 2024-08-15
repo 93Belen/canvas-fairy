@@ -54,6 +54,7 @@ window.addEventListener('resize', () => {
 // Start and Stop Recording
 const record = () => {
   if(recording.value){
+    store.clearVideoBlob()
     mediaRecorder.stop()
     recording.value = false
   }

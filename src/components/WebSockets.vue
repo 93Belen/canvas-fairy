@@ -8,7 +8,6 @@ socket.on('videoUrl', (url) => {
 console.log(url)
 })
 
-
 watch(() => store.videoBlob, (newBlob) => {
     if(newBlob){
         const reader = new FileReader();
