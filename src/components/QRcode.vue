@@ -5,19 +5,34 @@ const store = useRecordingStore()
 import QRCode from 'qrcode';
 
 
-const qrCodeUrl = ref('');
+const qrCodeUrl = ref('http://192.168.86.48:3000/download/recordedvideo1723839510844.mp4');
 
-watch(() => store.videoUrl, (newUrl) => {
-    if(newUrl){
-        console.log(newUrl)
-        const encodedUrl = encodeURI(newUrl);
-        QRCode.toDataURL(encodedUrl, { width: 200 }, (err, url) => {
+
+        QRCode.toDataURL(qrCodeUrl.value, { 
+            width: 300,
+            color: {
+                dark: '#FFD700', // Dark color for the QR code
+                light: '#80afb3' // Light color for the background
+                }
+
+            }, (err, url) => {
         if (err) console.error(err);
         qrCodeUrl.value = url;
         });
 
-    }
-})
+
+
+// watch(() => store.videoUrl, (newUrl) => {
+//     if(newUrl){
+//         console.log(newUrl)
+//         const encodedUrl = encodeURI(newUrl);
+//         QRCode.toDataURL(encodedUrl, { width: 200 }, (err, url) => {
+//         if (err) console.error(err);
+//         qrCodeUrl.value = url;
+//         });
+
+//     }
+// })
 
 
 </script>
@@ -30,10 +45,7 @@ watch(() => store.videoUrl, (newUrl) => {
 
 
 <style scoped>
-#qrcode {
-    position: absolute;
-    left: 50vw;
-    top: 10vh;
-    z-index: 9999999;
+#qrcode img{
+    border-radius: 50px;
 }
 </style>
