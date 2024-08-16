@@ -92,7 +92,7 @@ const record = () => {
       timeOut.value = 6
       store.clearVideoBlob()
       mediaRecorder.start()
-    }, 5000)
+    }, 6000)
   }
   //  After 1 minute max, stop recording
   timeOutStop = setTimeout(() => {

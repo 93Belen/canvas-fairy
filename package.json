@@ -12,6 +12,7 @@
     "@ffmpeg/ffmpeg": "^0.12.10",
     "add": "^2.0.6",
     "express": "^4.19.2",
+    "iconify": "^1.4.0",
     "lazy-brush": "^2.0.1",
     "pinia": "^2.2.0",
     "qrcode": "^1.5.4",
