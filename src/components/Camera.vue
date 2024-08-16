@@ -73,11 +73,13 @@ const record = () => {
       clearInterval(interval)
       clearTimeout(timeOutStart)
       clearTimeout(timeOutStop)
-      timeOut.value = 6
       store.clearVideoBlob()
       mediaRecorder.stop()
       recording.value = false
-      router.push('/download')
+      if(timeOut.value  === 6){
+        router.push('/download')
+      }
+      timeOut.value = 6
   }
   //  Start the recording
   else {
@@ -113,7 +115,23 @@ const record = () => {
 </script>
 
 <template>
-  <p v-if="timeOut < 6">{{ timeOut }}</p>
+<div id="timeout-div" v-if="timeOut < 6">
+  <p>{{ timeOut }}</p>
+  <svg id="timeout-svg" xmlns="http://www.w3.org/2000/svg" width="100px" height="100px" viewBox="0 0 24 24">
+		<circle cx="12" cy="12" r="0" fill="#FFD700">
+			<animate id="svgSpinnersPulseMultiple0" fill="freeze" attributeName="r" begin="0;svgSpinnersPulseMultiple2.end" calcMode="spline" dur="0.7s" keySplines=".52,.6,.25,.99" values="0;11" />
+			<animate fill="freeze" attributeName="opacity" begin="0;svgSpinnersPulseMultiple2.end" calcMode="spline" dur="1.2s" keySplines=".52,.6,.25,.99" values="1;0" />
+		</circle>
+		<circle cx="12" cy="12" r="0" fill="#FFD700">
+			<animate id="svgSpinnersPulseMultiple1" fill="freeze" attributeName="r" begin="svgSpinnersPulseMultiple0.begin+0.2s" calcMode="spline" dur="0.7s" keySplines=".52,.6,.25,.99" values="0;11" />
+			<animate fill="freeze" attributeName="opacity" begin="svgSpinnersPulseMultiple0.begin+0.2s" calcMode="spline" dur="1.2s" keySplines=".52,.6,.25,.99" values="1;0" />
+		</circle>
+		<circle cx="12" cy="12" r="0" fill="#FFD700">
+			<animate id="svgSpinnersPulseMultiple2" fill="freeze" attributeName="r" begin="svgSpinnersPulseMultiple0.begin+0.4s" calcMode="spline" dur="0.7s" keySplines=".52,.6,.25,.99" values="0;11" />
+			<animate fill="freeze" attributeName="opacity" begin="svgSpinnersPulseMultiple0.begin+0.4s" calcMode="spline" dur="1.2s" keySplines=".52,.6,.25,.99" values="1;0" />
+		</circle>
+	</svg>
+</div>
   <video src="" id="video"></video>
   <button :class="recording ? 'recording' : 'not-recording'" @click="record">
     {{ recording ? '' : 'Record' }}
@@ -137,22 +155,33 @@ button {
 }
 
 button.recording {
-  background: red;
+  background: #d6625c;
   width: 30px;
   animation: parpadea 1s ease-in-out infinite;
 }
 
 button.not-recording {
-  background: green;
+  background: #5cd666;
   width: 100px;
 }
 
-p {
+#timeout-div p{
   position: absolute;
   font-size: 50px;
-  color: black;
+  color: white;
   left: 50vw;
+  z-index: 99;
 }
+
+ #timeout-div svg {
+  position: absolute;
+  left: 48.4vw;
+  top: 27px;
+  z-index: 70;
+ }
+
+
+
 
 @keyframes parpadea {
   0% {
