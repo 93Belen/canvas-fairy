@@ -30,7 +30,9 @@ onMounted(() => {
 
       //  Record video
       let options = {
-        mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
+        // mimeType: 'video/mp4; codecs="avc1.4d002a, mp4a.40.2"'
+        // mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
+           mimeType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
       }
       const videoStream = canvas.captureStream(30)
       mediaRecorder = new MediaRecorder(videoStream, options)

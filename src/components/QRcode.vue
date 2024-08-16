@@ -14,11 +14,12 @@ const qrCodeUrl = ref('');
 watch(() => store.videoUrl, (newUrl) => {
     if(newUrl){
         console.log(newUrl)
-         // Generate QR code and set the URL
-        QRCode.toDataURL(newUrl, { width: 200 }, (err, url) => {
+        const encodedUrl = encodeURI(newUrl);
+        QRCode.toDataURL(encodedUrl, { width: 200 }, (err, url) => {
         if (err) console.error(err);
-        qrCodeUrl.value = url; // Set the generated QR code image URL
+        qrCodeUrl.value = url;
         });
+
     }
 })
 
