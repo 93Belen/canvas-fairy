@@ -2,12 +2,8 @@
 import { watch, ref } from 'vue'
 import { useRecordingStore } from '../stores/recordingStore'
 const store = useRecordingStore()
-import { socket } from '../socket'
 import QRCode from 'qrcode';
 
-socket.on('videoUrl', (url) => {
-store.updateVideoUrl(url)
-})
 
 const qrCodeUrl = ref('');
 

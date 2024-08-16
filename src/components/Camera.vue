@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRecordingStore } from '../stores/recordingStore'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const store = useRecordingStore()
 
 let video, canvas;
@@ -74,6 +77,7 @@ const record = () => {
       store.clearVideoBlob()
       mediaRecorder.stop()
       recording.value = false
+      router.push('/download')
   }
   //  Start the recording
   else {
@@ -99,6 +103,7 @@ const record = () => {
     store.clearVideoBlob()
     mediaRecorder.stop()
     recording.value = false
+      router.push('/download')
   }, 60000)
 }
 
