@@ -10,7 +10,7 @@ let video, canvas;
 let recording = ref(false)
 let mediaRecorder;
 let videoChucks = []
-let timeOut = ref(5)
+let timeOut = ref(6)
 
 onMounted(() => {
   video = document.getElementById("video");
@@ -73,7 +73,7 @@ const record = () => {
       clearInterval(interval)
       clearTimeout(timeOutStart)
       clearTimeout(timeOutStop)
-      timeOut.value = 5
+      timeOut.value = 6
       store.clearVideoBlob()
       mediaRecorder.stop()
       recording.value = false
@@ -89,7 +89,7 @@ const record = () => {
     // After 5 secs start recording
     timeOutStart = setTimeout(() => {
       clearInterval(interval)
-      timeOut.value = 5
+      timeOut.value = 6
       store.clearVideoBlob()
       mediaRecorder.start()
     }, 5000)
@@ -99,7 +99,7 @@ const record = () => {
     clearInterval(interval)
     clearTimeout(timeOutStart)
     clearTimeout(timeOutStop)
-    timeOut.value = 5
+    timeOut.value = 6
     store.clearVideoBlob()
     mediaRecorder.stop()
     recording.value = false
@@ -113,7 +113,7 @@ const record = () => {
 </script>
 
 <template>
-  <p v-if="timeOut !== 5">{{ timeOut }}</p>
+  <p v-if="timeOut < 6">{{ timeOut }}</p>
   <video src="" id="video"></video>
   <button :class="recording ? 'recording' : 'not-recording'" @click="record">
     {{ recording ? '' : 'Record' }}
