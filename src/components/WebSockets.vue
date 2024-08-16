@@ -4,10 +4,6 @@ import { useRecordingStore } from '../stores/recordingStore'
 const store = useRecordingStore()
 import { socket }from '../socket'
 
-socket.on('videoUrl', (url) => {
-console.log(url)
-store.updateVideoUrl(url)
-})
 
 watch(() => store.videoBlob, (newBlob) => {
     if(newBlob){

@@ -29,8 +29,11 @@ onMounted(() => {
 
 
       //  Record video
+      let options = {
+        mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
+      }
       const videoStream = canvas.captureStream(30)
-      mediaRecorder = new MediaRecorder(videoStream)
+      mediaRecorder = new MediaRecorder(videoStream, options)
       mediaRecorder.ondataavailable = (event) => {
         if(event.data.size > 0){
           videoChucks.push(event.data)
@@ -38,7 +41,7 @@ onMounted(() => {
       }
       // Add video blob to Pinia
       mediaRecorder.onstop = () => {
-        const blob = new Blob(videoChucks, { type: 'video/webm' })
+        const blob = new Blob(videoChucks, { type: 'video/mp4' })
         store.setVideoBlob(blob)
         videoChucks = []
       }

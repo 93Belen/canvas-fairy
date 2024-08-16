@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.10",
     "express": "^4.19.2",
     "lazy-brush": "^2.0.1",
     "pinia": "^2.2.0",
+    "qrcode": "^1.5.4",
     "socket.io-client": "^4.7.5",
     "tone": "^15.0.4",
     "vue": "^3.4.31"

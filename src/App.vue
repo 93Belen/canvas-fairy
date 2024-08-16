@@ -4,6 +4,7 @@ import Canvas from './components/Canvas.vue'
 import HandCoord from './components/HandCoord.vue'
 import Music from './components/Music.vue'
 import WebSockets from './components/WebSockets.vue'
+import QRcode from './components/QRcode.vue'
 </script>
 
 <template>
@@ -13,6 +14,7 @@ import WebSockets from './components/WebSockets.vue'
     <HandCoord/>
     <Music/>
     <WebSockets/>
+    <QRcode/>
   </div>
 </template>
 
