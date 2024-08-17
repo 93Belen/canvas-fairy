@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRecordingStore } from '../stores/recordingStore'
 import { useRouter } from 'vue-router'
 
@@ -11,6 +11,7 @@ let recording = ref(false)
 let mediaRecorder;
 let videoChucks = []
 let timeOut = ref(6)
+let tooLongOpenTimer;
 
 onMounted(() => {
   video = document.getElementById("video");
@@ -54,6 +55,7 @@ onMounted(() => {
     })
   }
 
+ 
 
 })
 
@@ -65,6 +67,10 @@ window.addEventListener('resize', () => {
 let interval;
 let timeOutStart;
 let timeOutStop;
+
+const cancel = () => {
+  router.push('/')
+}
 
 // Start and Stop Recording
 const record = () => {
@@ -133,9 +139,12 @@ const record = () => {
 	</svg>
 </div>
   <video src="" id="video"></video>
-  <button :class="recording ? 'recording' : 'not-recording'" @click="record">
+  <div id="button-div">
+    <button :class="recording ? 'recording' : 'not-recording'" @click="record">
     {{ recording ? '' : 'Record' }}
-  </button>
+    </button>
+    <button v-if="!recording" id="button-cancel" @click="cancel">Cancel</button>
+  </div>
 </template>
 
 <style scoped>
@@ -144,14 +153,22 @@ video {
 }
 
 button {
-  position: absolute;
-  bottom: 50px;
-  left: 50px;
   height: 30px;
   border-radius: 50px;
   border: none;
-  color: white;
+  color: black;
   transition: width 0.3s ease;
+}
+#button-div {
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  display: flex;
+  gap: 20px;
+}
+#button-cancel {
+  width: 100px;
+  background: #FFD700;
 }
 
 button.recording {
@@ -165,19 +182,31 @@ button.not-recording {
   width: 100px;
 }
 
-#timeout-div p{
+#timeout-div {
+  border: black solid 1;
   position: absolute;
+  height: 100px;
+  text-align: center;
+  left: 45vw;
+  top: 20px;
+}
+
+#timeout-div p{
   font-size: 50px;
   color: white;
-  left: 50vw;
+  /* left: 50vw; */
   z-index: 99;
+  margin: 0;
+  position: relative;
+  top: 20px;
 }
 
  #timeout-div svg {
-  position: absolute;
-  left: 48.4vw;
-  top: 27px;
+  position: relative;
+  /* left: 46vw;
+  top: 27px; */
   z-index: 70;
+  top: -60px;
  }
 
 
