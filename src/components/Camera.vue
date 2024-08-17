@@ -48,8 +48,7 @@ onMounted(() => {
         // mimeType: 'video/mp4; codecs="avc1.4d002a, mp4a.40.2"'
         // mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
         //  mimeType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
-        mimeType: mimeType,
-        bitsPerSecond: 200_000 
+        mimeType: mimeType
       }
       console.log(mimeType)
       const videoStream = canvas.captureStream(30)
