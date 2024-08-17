@@ -23,7 +23,8 @@ onMounted(() => {
 
     //  Cam
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: {
+    navigator.mediaDevices.getUserMedia({ 
+      video: {
         width: window.innerWidth,
         height: window.innerHeight
     }
@@ -31,13 +32,26 @@ onMounted(() => {
       video.srcObject = stream;
       video.play();
 
+    let mimeType = 'video/webm'; // Fallback MIME type
+      if (MediaRecorder.isTypeSupported('video/webm; codecs=vp8,opus')) {
+        mimeType = 'video/webm; codecs=vp8,opus';
+      } else if (MediaRecorder.isTypeSupported('video/mp4; codecs=avc1.42E01E,mp4a.40.2')) {
+        mimeType = 'video/mp4; codecs=avc1.42E01E,mp4a.40.2';
+      } else {
+        console.error('No supported MIME type found.');
+        return;
+      }
+
 
       //  Record video
       let options = {
         // mimeType: 'video/mp4; codecs="avc1.4d002a, mp4a.40.2"'
         // mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
-           mimeType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+        //  mimeType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
+        mimeType: mimeType,
+        bitsPerSecond: 200_000 
       }
+      console.log(mimeType)
       const videoStream = canvas.captureStream(30)
       mediaRecorder = new MediaRecorder(videoStream, options)
       mediaRecorder.ondataavailable = (event) => {
@@ -47,8 +61,8 @@ onMounted(() => {
       }
       // Add video blob to Pinia
       mediaRecorder.onstop = () => {
-        const blob = new Blob(videoChucks, { type: 'video/mp4' })
-        store.setVideoBlob(blob)
+        const blob = new Blob(videoChucks, options)
+        store.setVideoBlob({blob, mimeType})
         videoChucks = []
       }
       

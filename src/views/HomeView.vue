@@ -10,7 +10,7 @@ router.push('/video')
 
 <template>
   <div id="home-div">
-    <h1>Home</h1>
+    <h1>Bubble Bath</h1>
     <div id="video-button">
         <p @click="goToVideo" >Start</p>
     </div>
